@@ -303,10 +303,6 @@ public abstract class MyHeaderFooterAdapter<VH extends MyHeaderFooterAdapter.Hea
 
     }
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
 
     /**
      * 专门处理瀑布流的RecyclerView的头布局
@@ -325,15 +321,10 @@ public abstract class MyHeaderFooterAdapter<VH extends MyHeaderFooterAdapter.Hea
         RecyclerView.LayoutManager lm = recyclerView.getLayoutManager();
         if (lm instanceof GridLayoutManager) {
             final GridLayoutManager glm = (GridLayoutManager) lm;
-//            if (gridLayoutManagerSpanLookUp.getLayoutManager() != glm) {
-//                gridLayoutManagerSpanLookUp.setLayoutManager(glm);
-            glm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    return MyHeaderFooterAdapter.this.getSpanSize(position, glm.getSpanCount());
-                }
-            });
-//            }
+            if (gridLayoutManagerSpanLookUp.getLayoutManager() != glm) {
+                gridLayoutManagerSpanLookUp.setLayoutManager(glm);
+                glm.setSpanSizeLookup(gridLayoutManagerSpanLookUp);
+            }
         } else if (lm instanceof StaggeredGridLayoutManager) {
             final StaggeredGridLayoutManager sgm = (StaggeredGridLayoutManager) lm;
             //瀑布流StaggeredGridLayoutManager头尾布局的判断方法
@@ -355,10 +346,27 @@ public abstract class MyHeaderFooterAdapter<VH extends MyHeaderFooterAdapter.Hea
      * @param spanCount
      * @return
      */
-    final public int getSpanSize(int position, int spanCount) {
+    final protected int getSpanSize(int position, int spanCount) {
         return isHeaderView(position) || isFooterView(position) || isEmpty() ?
                 spanCount :
                 getViewHolderSpanSize(getRealPosition(position), spanCount);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        if (gridLayoutManagerSpanLookUp == null) {
+            gridLayoutManagerSpanLookUp = new GridLayoutManagerSpanLookUp();
+        }
+        //GridLayoutManager头尾布局判断方法
+        RecyclerView.LayoutManager lm = recyclerView.getLayoutManager();
+        if (lm instanceof GridLayoutManager) {
+            final GridLayoutManager glm = (GridLayoutManager) lm;
+            if (gridLayoutManagerSpanLookUp.getLayoutManager() != glm) {
+                gridLayoutManagerSpanLookUp.setLayoutManager(glm);
+                glm.setSpanSizeLookup(gridLayoutManagerSpanLookUp);
+            }
+        }
     }
 
     /**

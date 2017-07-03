@@ -4,12 +4,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import android.view.ViewGroup;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 项目名称：RecyclerViewUtil
- * 类描述：
+ * 类描述：多布局类型的adapter
  * 创建人：xyp
  * 创建时间：2017/6/1 10:12
  * 修改人：meyki-bear
@@ -22,11 +23,11 @@ public abstract class MyGroupAdapter<VH extends MyListenerAdapter.ListenerViewHo
     private OnGroupClickListener onGroupClickListener;
     private OnChildClickListener onChildClickListener;
 
-    public MyGroupAdapter.OnChildClickListener getOnChildClickListener() {
+    public OnChildClickListener getOnChildClickListener() {
         return onChildClickListener;
     }
 
-    public void setOnChildClickListener(MyGroupAdapter.OnChildClickListener onChildClickListener) {
+    public void setOnChildClickListener(OnChildClickListener onChildClickListener) {
         this.onChildClickListener = onChildClickListener;
     }
 
@@ -47,11 +48,23 @@ public abstract class MyGroupAdapter<VH extends MyListenerAdapter.ListenerViewHo
     }
 
     /**
+     * 获取这个position在recyclerView里的绝对位置
+     *
+     * @param groupPosition
+     * @param position
+     * @return
+     */
+    public int getItemRealPosition(int groupPosition, int position) {
+        Pair<Integer, Integer> integerIntegerPair = groups.get(groupPosition);
+        return getHeaderSize()+(integerIntegerPair.second+1 + position);
+    }
+
+    /**
      * 记录每个group以及这个group的第一个position在recyclerView里的绝对索引
      */
     private ArrayList<Pair<Integer, Integer>> groups;
 
-    private Pair<Integer, Integer> getGroupAndChildPosition(int position) {
+    protected Pair<Integer, Integer> getGroupAndChildPosition(int position) {
         /**
          * 遍历每个groups的索引，如果当前position小于当前group第一个数据的绝对位置，那么这个
          * position就属于上一组,如果遍历完了都找不到那就能确定这个position属于最后一组了
@@ -79,7 +92,7 @@ public abstract class MyGroupAdapter<VH extends MyListenerAdapter.ListenerViewHo
 
     @Override
     protected boolean needsClickListener() {
-        return onChildClickListener!=null||onGroupClickListener!=null;
+        return onChildClickListener != null || onGroupClickListener != null;
     }
 
     protected int getChildViewHolderSpanSize(int groupPosition, int childPosition, int spanCount) {
@@ -127,7 +140,7 @@ public abstract class MyGroupAdapter<VH extends MyListenerAdapter.ListenerViewHo
             type = getGroupItemType(groupAndChildPosition.first);
         } else {
             //需要减去标题的位置
-            type = getGroupChildItemType(groupAndChildPosition.first, groupAndChildPosition.second - 1);
+            type = getGroupChildItemType(groupAndChildPosition.first, groupListPosition - 1);
         }
         return type;
     }
@@ -149,7 +162,6 @@ public abstract class MyGroupAdapter<VH extends MyListenerAdapter.ListenerViewHo
 
     @Override
     final protected void onItemClick(int position) {
-        super.onItemClick(position);
         Pair<Integer, Integer> pair = getGroupAndChildPosition(position);
         int groupListPosition = getGroupListPosition(pair, position);
         if (groupListPosition == 0) { //是每一组的标题位,传这组的位置

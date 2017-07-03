@@ -109,11 +109,7 @@ public abstract class MyListenerAdapter<VH extends MyListenerAdapter.ListenerVie
         }
     }
 
-    /**
-     * 当Item里子控件被点击的监听
-     */
-    public interface OnItemViewClickListener {
-
-        void onItemViewClickListener(int position, int doWhat);
+    public interface OnItemViewClickListener{
+        void onItemViewClickListener(int position,int doWhat);
     }
 }
