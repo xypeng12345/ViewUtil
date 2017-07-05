@@ -102,7 +102,7 @@ public abstract class MyListenerAdapter<VH extends MyListenerAdapter.ListenerVie
 
     protected abstract VH onCreateListenerDataViewHolder(ViewGroup parent, int viewType);
 
-    public class ListenerViewHolder extends MyHeaderFooterAdapter.HeaderAndFooterViewHolder {
+    public static class ListenerViewHolder extends MyHeaderFooterAdapter.HeaderAndFooterViewHolder {
 
         public ListenerViewHolder(View itemView) {
             super(itemView);

@@ -494,7 +494,7 @@ public abstract class MyHeaderFooterAdapter<VH extends MyHeaderFooterAdapter.Hea
         }
     }
 
-    public class HeaderAndFooterViewHolder extends RecyclerView.ViewHolder {
+    public static class HeaderAndFooterViewHolder extends RecyclerView.ViewHolder {
 
         public HeaderAndFooterViewHolder(View itemView) {
             super(itemView);
